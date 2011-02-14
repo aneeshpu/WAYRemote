@@ -6,6 +6,7 @@ import random
 import hashlib
 import hmac
 import httplib
+import binascii
 
 class OAuthWayRemote(webapp.RequestHandler):
   def get(self):
@@ -17,8 +18,8 @@ class OAuthWayRemote(webapp.RequestHandler):
     signature_base_string = self.signature_base_string(httpMethod, baseUrl, request_parameters)
     self.response.out.write("signature base string in request is {0}".format(signature_base_string))
     self.response.out.write("<br/>")
-    hmac_sha1 = hmac.new ('8ZIsnRdNjD6eBtQ1oTjlnosZ',signature_base_string, hashlib.sha1)
-    signature = hmac_sha1.hexdigest() 
+    hmac_sha1 = hmac.new ('8ZIsnRdNjD6eBtQ1oTjlnosZ&',signature_base_string, hashlib.sha1)
+    signature = urllib.quote_plus(binascii.b2a_base64(hmac_sha1.digest())[:-1])
     self.response.out.write("<hr/>")
     self.response.out.write(signature)
     self._get_request_token(signature)
