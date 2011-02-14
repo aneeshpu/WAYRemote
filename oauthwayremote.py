@@ -18,7 +18,6 @@ class OAuthWayRemote(webapp.RequestHandler):
     signature_base_string = self.signature_base_string(http_method, base_url, request_parameters)
     self.response.out.write("signature base string in request is {0}".format(signature_base_string))
     self.response.out.write("<br/>")
-    hmac_sha1 = hmac.new ('8ZIsnRdNjD6eBtQ1oTjlnosZ&',signature_base_string, hashlib.sha1)
     signature = urllib.quote_plus(binascii.b2a_base64(hmac_sha1.digest())[:-1])
     self.response.out.write("<hr/>")
     self.response.out.write(signature)
