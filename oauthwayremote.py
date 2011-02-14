@@ -10,13 +10,12 @@ import binascii
 
 class OAuthWayRemote(webapp.RequestHandler):
   def get(self):
-    #baseUrl = "https%3A%2F%2Fwww.google.com%2Faccounts%2FOAuthGetRequestToken"
-    baseUrl = urllib.quote_plus("https://www.google.com/accounts/OAuthGetRequestToken")
-    httpMethod = "GET"
+    base_url = urllib.quote_plus("https://www.google.com/accounts/OAuthGetRequestToken")
+    http_method = "GET"
     request_parameters = self.request_parameters()
     self.response.out.write(request_parameters)
     self.response.out.write("<br/>")
-    signature_base_string = self.signature_base_string(httpMethod, baseUrl, request_parameters)
+    signature_base_string = self.signature_base_string(http_method, base_url, request_parameters)
     self.response.out.write("signature base string in request is {0}".format(signature_base_string))
     self.response.out.write("<br/>")
     hmac_sha1 = hmac.new ('8ZIsnRdNjD6eBtQ1oTjlnosZ&',signature_base_string, hashlib.sha1)
@@ -46,8 +45,6 @@ class OAuthWayRemote(webapp.RequestHandler):
 
   def signature_base_string(self, http_method,request_baseurl, request_parameters):
     encoded_params = urllib.urlencode(request_parameters)
-#    encoded_params = encoded_params.replace("=","%3D")
-#    encoded_params = encoded_params.replace("&", "%26")
     encoded_params = urllib.quote(encoded_params)
     return http_method + "&" + request_baseurl + "&" + encoded_params
 
