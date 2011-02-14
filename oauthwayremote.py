@@ -10,7 +10,8 @@ import binascii
 
 class OAuthWayRemote(webapp.RequestHandler):
   def get(self):
-    baseUrl = "https%3A%2F%2Fwww.google.com%2Faccounts%2FOAuthGetRequestToken"
+    #baseUrl = "https%3A%2F%2Fwww.google.com%2Faccounts%2FOAuthGetRequestToken"
+    baseUrl = urllib.quote_plus("https://www.google.com/accounts/OAuthGetRequestToken")
     httpMethod = "GET"
     request_parameters = self.request_parameters()
     self.response.out.write(request_parameters)
@@ -45,8 +46,9 @@ class OAuthWayRemote(webapp.RequestHandler):
 
   def signature_base_string(self, http_method,request_baseurl, request_parameters):
     encoded_params = urllib.urlencode(request_parameters)
-    encoded_params = encoded_params.replace("=","%3D")
-    encoded_params = encoded_params.replace("&", "%26")
+#    encoded_params = encoded_params.replace("=","%3D")
+#    encoded_params = encoded_params.replace("&", "%26")
+    encoded_params = urllib.quote(encoded_params)
     return http_method + "&" + request_baseurl + "&" + encoded_params
 
   def request_parameters(self):
@@ -56,8 +58,8 @@ class OAuthWayRemote(webapp.RequestHandler):
     oauth_signature_method = ("oauth_signature_method", "HMAC-SHA1")
     self._oauth_timestamp = str(int(time.time()))
     oauth_timestamp = ("oauth_timestamp", self._oauth_timestamp)
-    google_scope = ("scope", "https%3A%2F%2Fwww.googleapis.com%2Fauth%2Flatitude")
-    oauth_callback = ("oauth_callback", "http%3A%2F%2Flocalhost%2FWAYRemote")
+    google_scope = ("scope", "https://www.googleapis.com/auth/latitude")
+    oauth_callback = ("oauth_callback", "http://localhost/WAYRemote")
     req_params = [oauth_consumer_key, oauth_nonce, oauth_signature_method, oauth_timestamp, google_scope,oauth_callback]
     req_params.sort()
     return req_params
